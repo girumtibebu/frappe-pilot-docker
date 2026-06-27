@@ -6,6 +6,8 @@ RUN apk add --no-cache git python3 make g++
 
 RUN git clone https://github.com/frappe/pilot.git .
 
+WORKDIR /app/apps/pilot
+
 RUN npm install
 
 RUN npm run build
