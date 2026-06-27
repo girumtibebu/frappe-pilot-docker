@@ -29,6 +29,10 @@ RUN curl -fsSL https://raw.githubusercontent.com/frappe/pilot/main/install.sh | 
 # Future-proofed path bindings reflecting the official pilot rename
 ENV PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}"
 
+# Force backend workers and Flask to bind to IPv4 instead of local IPv6 loopback
+ENV HOST=0.0.0.0
+ENV FLASK_RUN_HOST=0.0.0.0
+
 EXPOSE 8002 7000
 
 # Automated boot intercept: seeds workspace layout on empty volume, then spins up the daemon
