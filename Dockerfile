@@ -32,4 +32,4 @@ ENV PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}"
 EXPOSE 8002 7000
 
 # Automated boot intercept: seeds workspace layout on empty volume, then spins up the daemon
-CMD ["sh", "-c", "if [ ! -f bench.toml ] && [ ! -d benches ]; then bench new emc; fi; exec bench start"]
+CMD ["sh", "-c", "if [ ! -f bench.toml ] && [ ! -d benches ]; then bench new emc; fi; exec bench start --host 0.0.0.0"]
