@@ -1,47 +1,105 @@
-version: '3.8'
-
 services:
-  pilot-app:
-    image: frappe/pilot:latest
-    container_name: frappe_pilot_app
-    environment:
-      - DB_HOST=mariadb
-      - DB_PORT=3306
-      - REDIS_CACHE=redis://redis:6379/0
-    volumes:
-      - pilot_data:/home/frappe
+
+  pilot:
+
+    build:
+
+      context: .
+
+
+    container_name: pilot
+
+    restart: unless-stopped
+
+
     ports:
-      - "7000:7000"
+
+      - "7000:8000"
+
+
+    env_file:
+
+      - .env
+
+
+    environment:
+
+      DOMAIN: ${DOMAIN}
+
+      NODE_ENV: production
+
+      TZ: Africa/Addis_Ababa
+
+
+      SECRET_KEY: ${SECRET_KEY}
+
+
+      DATABASE_URL: mysql://pilot:${DB_USER_PASSWORD}@mariadb:3306/pilot
+
+
+      REDIS_URL: redis://redis:6379
+
+
+
     depends_on:
+
       - mariadb
+
       - redis
-    networks:
-      - pilot-net
-    restart: always
+
+
+
+    volumes:
+
+      - pilot_data:/app/data
+
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+
 
   mariadb:
-    image: mariadb:10.11
-    container_name: pilot_mariadb
+
+    image: mariadb:11
+
+    container_name: pilot-mariadb
+
+    restart: unless-stopped
+
+
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+      MYSQL_DATABASE: pilot
+
+      MYSQL_USER: pilot
+
+      MYSQL_PASSWORD: ${DB_USER_PASSWORD}
+
+
     volumes:
-      - mariadb_data_v3:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-read-only-compressed=OFF
-    networks:
-      - pilot-net
-    restart: always
+
+      - mariadb_data:/var/lib/mysql
+
+
+
+
 
   redis:
+
     image: redis:7-alpine
-    container_name: pilot_redis
-    networks:
-      - pilot-net
-    restart: always
+
+    container_name: pilot-redis
+
+    restart: unless-stopped
+
+
+
+
 
 volumes:
-  pilot_data:
-  mariadb_data_v3:
 
-networks:
-  pilot-net:
-    driver: bridge
+  pilot_data:
+
+  mariadb_data:
