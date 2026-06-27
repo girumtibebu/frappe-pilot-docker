@@ -31,5 +31,5 @@ ENV PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}"
 
 EXPOSE 8002 7000
 
-# Fire up the manager daemon directly inside the container
-CMD ["bench", "start"]
+# Automated boot intercept: seeds workspace layout on empty volume, then spins up the daemon
+CMD ["sh", "-c", "if [ ! -f bench.toml ] && [ ! -d benches ]; then bench new emc; fi; exec bench start"]
