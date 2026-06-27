@@ -22,7 +22,7 @@ services:
     image: mariadb:10.11
     container_name: pilot_mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: changeme_secure_db_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
     # Mandatory configuration directives for the ERPNext database schema engine
