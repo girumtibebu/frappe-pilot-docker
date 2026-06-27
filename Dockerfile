@@ -20,6 +20,10 @@ RUN useradd -m -s /bin/bash frappe && \
     echo "frappe ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/frappe && \
     chmod 0440 /etc/sudoers.d/frappe
 
+# Create a fake systemctl tool to trick the Pilot installer script
+RUN echo '#!/bin/sh\nexit 0' > /usr/local/bin/systemctl && \
+    chmod +x /usr/local/bin/systemctl
+
 USER frappe
 WORKDIR /home/frappe
 
