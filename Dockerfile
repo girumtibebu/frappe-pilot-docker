@@ -29,9 +29,6 @@ RUN curl -fsSL https://raw.githubusercontent.com/frappe/pilot/main/install.sh | 
 # Future-proofed path bindings reflecting the official pilot rename
 ENV PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}"
 
-# Force pilot to use dev procfile manager using explicit path injection
-RUN PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}" bench manager set procfile --global
-
 EXPOSE 8002 7000
 
 # Fire up the manager daemon directly inside the container
