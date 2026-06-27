@@ -26,10 +26,11 @@ WORKDIR /home/frappe
 # Download and execute the official pilot installer script
 RUN curl -fsSL https://raw.githubusercontent.com/frappe/pilot/main/install.sh | bash -s -- --user frappe -y
 
-ENV PATH="/home/frappe/bench-cli:${PATH}"
+# Future-proofed path bindings reflecting the official pilot rename
+ENV PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}"
 
-# Force pilot to use dev procfile manager instead of trying to hit host systemd
-RUN bench manager set procfile --global
+# Force pilot to use dev procfile manager using explicit path injection
+RUN PATH="/home/frappe/pilot:/home/frappe/.local/bin:${PATH}" bench manager set procfile --global
 
 EXPOSE 8002 7000
 
