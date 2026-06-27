@@ -19,15 +19,10 @@ services:
     restart: always
 
   mariadb:
-    image: mariadb:10.11
-    container_name: pilot_mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    # Mandatory configuration directives for the ERPNext database schema engine
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-read-only-compressed=OFF
-    restart: always
+      image: mariadb:10.11
+      container_name: pilot_mariadb
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Tells Compose to use Dokploy's Env Panel variable
 
   redis:
     image: redis:7-alpine
