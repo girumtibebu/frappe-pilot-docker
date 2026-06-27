@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  pilot-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: frappe-pilot-sandbox:latest
+    container_name: frappe_pilot_app
+    volumes:
+      # Protects all custom apps, configurations, sites, and asset logs
+      - pilot_data:/home/frappe
+    ports:
+      - "8002:8002" # Admin UI Controller
+      - "7000:7000" # Frappe Application Site routing
+    depends_on:
+      - mariadb
+      - redis
+    restart: always
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: pilot_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: changeme_secure_db_password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    # Mandatory configuration directives for the ERPNext database schema engine
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-read-only-compressed=OFF
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: pilot_redis
+    restart: always
+
+volumes:
+  pilot_data:
+  mariadb_data:
