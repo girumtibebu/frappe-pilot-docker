@@ -1,17 +1,29 @@
-FROM node:22-alpine
+FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apk add --no-cache git python3 make g++
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
+
+# install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+ENV PATH="/root/.local/bin:$PATH"
+
+
+# get pilot source
 RUN git clone https://github.com/frappe/pilot.git .
 
-RUN find . -name package.json
 
-RUN npm install
+# install dependencies using uv
+RUN uv sync
 
-RUN npm run build
 
 EXPOSE 8000
 
-CMD ["npm","start"]
+
+CMD ["uv", "run", "pilot"]
