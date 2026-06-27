@@ -1,21 +1,47 @@
 version: '3.8'
 
 services:
-  pilot-sandbox:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: frappe-pilot-sandbox:latest
+  pilot-app:
+    image: frappe/pilot:latest
     container_name: frappe_pilot_app
-    # Privileged modes are mandatory for systemd socket manipulation hooks
-    privileged: true
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - REDIS_CACHE=redis://redis:6379/0
     volumes:
       - pilot_data:/home/frappe
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
-      - "8002:8002"
       - "7000:7000"
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - pilot-net
+    restart: always
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: pilot_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data_v3:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-read-only-compressed=OFF
+    networks:
+      - pilot-net
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: pilot_redis
+    networks:
+      - pilot-net
     restart: always
 
 volumes:
   pilot_data:
+  mariadb_data_v3:
+
+networks:
+  pilot-net:
+    driver: bridge
