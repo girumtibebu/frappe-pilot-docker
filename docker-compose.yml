@@ -8,27 +8,40 @@ services:
     image: frappe-pilot-sandbox:latest
     container_name: frappe_pilot_app
     volumes:
-      # Protects all custom apps, configurations, sites, and asset logs
       - pilot_data:/home/frappe
     ports:
-      - "8002:8002" # Admin UI Controller
-      - "7000:7000" # Frappe Application Site routing
+      - "8002:8002"
+      - "7000:7000"
     depends_on:
       - mariadb
       - redis
+    networks:
+      - pilot-net
     restart: always
 
   mariadb:
-      image: mariadb:10.11
-      container_name: pilot_mariadb
-      environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Tells Compose to use Dokploy's Env Panel variable
+    image: mariadb:10.11
+    container_name: pilot_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data_v2:/var/lib/mysql # Incremented to bypass old volume cache
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-read-only-compressed=OFF
+    networks:
+      - pilot-net
+    restart: always
 
   redis:
     image: redis:7-alpine
     container_name: pilot_redis
+    networks:
+      - pilot-net
     restart: always
 
 volumes:
   pilot_data:
-  mariadb_data:
+  mariadb_data_v2: # Fresh volume descriptor
+
+networks:
+  pilot-net:
+    driver: bridge
