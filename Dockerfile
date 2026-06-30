@@ -28,14 +28,12 @@ RUN git clone https://github.com/frappe/pilot.git
 
 WORKDIR /opt/pilot
 
-# Install dependencies using uv
 RUN uv venv
 
-# IMPORTANT: install project properly
 RUN uv pip install .
 
-# Expose Pilot port
+
 EXPOSE 7000
 
-# Run via installed CLI (NOT python module)
-CMD ["pilot"]
+
+CMD ["uv", "run", "python", "-m", "frappe_pilot"]
