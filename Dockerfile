@@ -18,7 +18,6 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-# Install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 
@@ -33,11 +32,10 @@ WORKDIR /opt/pilot
 
 RUN uv venv
 
-
 RUN uv sync
 
 
 EXPOSE 7000
 
 
-CMD ["/opt/pilot/.venv/bin/python", "main.py"]
+CMD ["/opt/pilot/.venv/bin/python", "-m", "pilot"]
