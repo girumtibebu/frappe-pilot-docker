@@ -10,18 +10,27 @@ services:
 
     privileged: true
 
+
     ports:
-      - "8000:8000"
+      - "7000:7000"
+
 
     environment:
+
       DOMAIN: ${DOMAIN}
+
       PILOT_ENV: ${PILOT_ENV}
+
       TZ: ${TZ}
 
+
     volumes:
+
       - /var/run/docker.sock:/var/run/docker.sock
+
       - pilot-data:/opt/pilot
 
 
 volumes:
+
   pilot-data:
