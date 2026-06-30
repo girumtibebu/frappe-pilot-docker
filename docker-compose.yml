@@ -1,25 +1,40 @@
 services:
 
   pilot:
-    build: .
+
+    build:
+      context: .
 
     container_name: frappe-pilot
 
     restart: unless-stopped
 
+
     privileged: true
 
+
     ports:
+
+      - "2222:22"
+
       - "7000:7000"
 
+
     environment:
+
       DOMAIN: ${DOMAIN}
-      PILOT_ENV: ${PILOT_ENV}
+
       TZ: ${TZ}
 
+
     volumes:
+
       - /var/run/docker.sock:/var/run/docker.sock
-      - pilot-data:/opt/pilot
+
+      - pilot-data:/opt
+
+
 
 volumes:
+
   pilot-data:
