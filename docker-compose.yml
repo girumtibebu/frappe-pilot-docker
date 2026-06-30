@@ -2,104 +2,26 @@ services:
 
   pilot:
 
-    build:
+    build: .
 
-      context: .
-
-
-    container_name: pilot
+    container_name: frappe-pilot
 
     restart: unless-stopped
 
+    privileged: true
 
     ports:
-
-      - "7000:8000"
-
-
-    env_file:
-
-      - .env
-
+      - "8000:8000"
 
     environment:
-
       DOMAIN: ${DOMAIN}
-
-      NODE_ENV: production
-
-      TZ: Africa/Addis_Ababa
-
-
-      SECRET_KEY: ${SECRET_KEY}
-
-
-      DATABASE_URL: mysql://pilot:${DB_USER_PASSWORD}@mariadb:3306/pilot
-
-
-      REDIS_URL: redis://redis:6379
-
-
-
-    depends_on:
-
-      - mariadb
-
-      - redis
-
-
+      PILOT_ENV: ${PILOT_ENV}
+      TZ: ${TZ}
 
     volumes:
-
-      - pilot_data:/app/data
-
       - /var/run/docker.sock:/var/run/docker.sock
-
-
-
-
-  mariadb:
-
-    image: mariadb:11
-
-    container_name: pilot-mariadb
-
-    restart: unless-stopped
-
-
-    environment:
-
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-
-      MYSQL_DATABASE: pilot
-
-      MYSQL_USER: pilot
-
-      MYSQL_PASSWORD: ${DB_USER_PASSWORD}
-
-
-    volumes:
-
-      - mariadb_data:/var/lib/mysql
-
-
-
-
-
-  redis:
-
-    image: redis:7-alpine
-
-    container_name: pilot-redis
-
-    restart: unless-stopped
-
-
-
+      - pilot-data:/opt/pilot
 
 
 volumes:
-
-  pilot_data:
-
-  mariadb_data:
+  pilot-data:
