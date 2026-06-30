@@ -2,11 +2,13 @@ services:
 
   pilot:
 
-    build: .
+    build:
+      context: .
 
     container_name: frappe-pilot
 
     restart: unless-stopped
+
 
     privileged: true
 
